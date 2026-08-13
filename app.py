@@ -43,6 +43,338 @@ st.set_page_config(
 
 
 # ============================================================
+# AUTHENTIFICATION ADMINISTRATEUR
+# ============================================================
+
+if "authentifie" not in st.session_state:
+    st.session_state.authentifie = False
+
+
+def afficher_connexion():
+    logo64 = logo_base64()
+
+    logo_html = (
+        f'<img src="data:image/png;base64,{logo64}" alt="VWFS">'
+        if logo64
+        else '<div style="font-weight:800;color:#001E50;">VWFS</div>'
+    )
+
+    st.markdown(
+        """
+        <style>
+        section[data-testid="stSidebar"] {
+            display: none !important;
+        }
+
+        .block-container {
+            max-width: 1180px !important;
+            padding-top: 3.2rem !important;
+            padding-bottom: 3rem !important;
+        }
+
+        .login-shell {
+            border: 1px solid #E3E9F1;
+            border-radius: 28px;
+            overflow: hidden;
+            box-shadow: 0 24px 70px rgba(0, 30, 80, 0.12);
+            background: white;
+        }
+
+        .login-left {
+            min-height: 600px;
+            padding: 48px 46px;
+            border-radius: 26px;
+            background:
+                radial-gradient(circle at 88% 12%, rgba(39,149,255,.32), transparent 26%),
+                linear-gradient(135deg,#061B3D 0%,#003D7A 58%,#0072CE 120%);
+            color: white;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .login-left:before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            background-image: radial-gradient(rgba(255,255,255,.16) 1px, transparent 1px);
+            background-size: 24px 24px;
+            opacity: .20;
+        }
+
+        .login-left-content {
+            position: relative;
+            z-index: 2;
+        }
+
+        .login-brand {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 64px;
+        }
+
+        .login-brand-logo {
+            width: 72px;
+            height: 72px;
+            border-radius: 18px;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 9px;
+            box-shadow: 0 12px 28px rgba(0,0,0,.16);
+        }
+
+        .login-brand-logo img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+
+        .login-brand-name {
+            font-size: 1.05rem;
+            font-weight: 800;
+            line-height: 1.15;
+        }
+
+        .login-brand-sub {
+            color: #8CC9FF;
+            font-size: .66rem;
+            letter-spacing: 1.5px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-top: 5px;
+        }
+
+        .login-kicker {
+            color: #8CC9FF;
+            font-size: .70rem;
+            letter-spacing: 2px;
+            font-weight: 800;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+
+        .login-title-pro {
+            font-size: 2.45rem;
+            line-height: 1.08;
+            font-weight: 800;
+            margin-bottom: 18px;
+            letter-spacing: -.5px;
+        }
+
+        .login-text-pro {
+            max-width: 570px;
+            color: #D7E7F8;
+            font-size: .96rem;
+            line-height: 1.72;
+        }
+
+        .login-chip-row {
+            display: flex;
+            gap: 9px;
+            flex-wrap: wrap;
+            margin-top: 28px;
+        }
+
+        .login-chip-pro {
+            display: inline-flex;
+            padding: 7px 11px;
+            border-radius: 999px;
+            border: 1px solid rgba(255,255,255,.18);
+            background: rgba(255,255,255,.08);
+            color: #F1F7FD;
+            font-size: .69rem;
+            font-weight: 700;
+        }
+
+        .login-owner {
+            position: absolute;
+            left: 46px;
+            bottom: 38px;
+            z-index: 2;
+            color: #CFE3F7;
+            font-size: .80rem;
+            line-height: 1.55;
+        }
+
+        .login-owner strong {
+            color: white;
+            font-size: .94rem;
+        }
+
+        .login-right-head {
+            padding: 78px 22px 18px 22px;
+        }
+
+        .login-right-badge {
+            color: #0072CE;
+            font-size: .68rem;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .login-right-title {
+            color: #001E50;
+            font-size: 1.8rem;
+            font-weight: 800;
+            line-height: 1.2;
+            margin-bottom: 9px;
+        }
+
+        .login-right-text {
+            color: #66758C;
+            font-size: .88rem;
+            line-height: 1.65;
+            margin-bottom: 18px;
+        }
+
+        div[data-testid="stTextInput"] input {
+            min-height: 49px !important;
+            border-radius: 12px !important;
+            border: 1px solid #DCE5EF !important;
+            background: #F8FAFD !important;
+        }
+
+        div.stButton > button {
+            width: 100% !important;
+            min-height: 49px !important;
+            border-radius: 12px !important;
+            font-weight: 800 !important;
+            background: linear-gradient(120deg,#0072CE,#003D7A) !important;
+            border: none !important;
+            box-shadow: 0 10px 24px rgba(0,114,206,.20) !important;
+        }
+
+        .login-security {
+            text-align: center;
+            color: #8A98AA;
+            font-size: .72rem;
+            line-height: 1.55;
+            padding: 12px 5px 0 5px;
+        }
+
+        [data-testid="column"]:nth-of-type(1) {
+            padding-right: 0.25rem !important;
+        }
+
+        [data-testid="column"]:nth-of-type(2) {
+            padding-left: 1.1rem !important;
+            padding-right: 1.1rem !important;
+        }
+
+        @media (max-width: 900px) {
+            .login-left {
+                min-height: 470px;
+            }
+            .login-owner {
+                position: relative;
+                left: auto;
+                bottom: auto;
+                margin-top: 48px;
+            }
+            .login-right-head {
+                padding-top: 20px;
+            }
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+
+    col_visuel, col_login = st.columns([1.35, 0.85], gap="large")
+
+    with col_visuel:
+        html_gauche = (
+            f'<div class="login-left">'
+            f'<div class="login-left-content">'
+            f'<div class="login-brand">'
+            f'<div class="login-brand-logo">{logo_html}</div>'
+            f'<div>'
+            f'<div class="login-brand-name">Volkswagen Financial Services</div>'
+            f'<div class="login-brand-sub">Decision Intelligence</div>'
+            f'</div>'
+            f'</div>'
+            f'<div class="login-kicker">DATA • PERFORMANCE • PRÉVISION</div>'
+            f'<div class="login-title-pro">Cockpit de pilotage<br>commercial & financier</div>'
+            f'<div class="login-text-pro">'
+            f"Plateforme d'aide à la décision dédiée à l'analyse de la performance, "
+            f"à la comparaison des réseaux et à la simulation de scénarios prédictifs."
+            f'</div>'
+            f'<div class="login-chip-row">'
+            f'<span class="login-chip-pro">Dashboard exécutif</span>'
+            f'<span class="login-chip-pro">Machine Learning</span>'
+            f'<span class="login-chip-pro">Données simulées</span>'
+            f'</div>'
+            f'</div>'
+            f'<div class="login-owner">'
+            f'Projet réalisé par<br>'
+            f'<strong>Amine BOUCHAREB</strong><br>'
+            f'Mastère Data & Intelligence Artificielle'
+            f'</div>'
+            f'</div>'
+        )
+
+        st.markdown(
+            html_gauche,
+            unsafe_allow_html=True
+        )
+
+    with col_login:
+        st.markdown(
+            '<div class="login-right-head">'
+            '<div class="login-right-badge">ACCÈS SÉCURISÉ</div>'
+            '<div class="login-right-title">Connexion administrateur</div>'
+            '<div class="login-right-text">Identifiez-vous pour accéder au cockpit de pilotage VWFS.</div>'
+            '</div>',
+            unsafe_allow_html=True
+        )
+
+        mot_de_passe = st.text_input(
+            "Mot de passe",
+            type="password",
+            placeholder="Saisissez votre mot de passe",
+            key="mot_de_passe_admin"
+        )
+
+        if st.button(
+            "Accéder au cockpit",
+            type="primary",
+            use_container_width=True
+        ):
+            try:
+                mot_de_passe_attendu = st.secrets["ADMIN_PASSWORD"]
+
+                if mot_de_passe == mot_de_passe_attendu:
+                    st.session_state.authentifie = True
+                    st.rerun()
+                else:
+                    st.error("Mot de passe incorrect.")
+
+            except (KeyError, FileNotFoundError):
+                st.error(
+                    "Le mot de passe administrateur n'est pas configuré "
+                    "dans les Secrets Streamlit."
+                )
+
+        st.markdown(
+            """
+<div class="login-security">
+    Accès réservé • Mot de passe protégé via Streamlit Secrets
+</div>
+""",
+            unsafe_allow_html=True
+        )
+
+
+if not st.session_state.authentifie:
+    afficher_connexion()
+    st.stop()
+
+
+# ============================================================
 # SYSTÈME VISUEL — TOKENS
 # ============================================================
 # Palette dérivée du bleu institutionnel VWFS, resserrée autour
